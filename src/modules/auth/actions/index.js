@@ -6,8 +6,8 @@ export const onBoardUser = async () => {
   try {
     const user = await currentUser();
 
-    //console.log("user : ", user);
-    
+    // console.log("user : ", user);
+    // console.log("email -add : ", user.emailAddresses?.[0]?.emailAddress);
 
     if (!user) {
       return {
@@ -16,7 +16,7 @@ export const onBoardUser = async () => {
       };
     }
 
-    const { id, firstName, lastName, email, imageUrl } = user;
+    const { id, firstName, lastName, emailAddresses, imageUrl } = user;
 
     //either update an existing user or create a new one
     const newUser = await db.user.upsert({
@@ -29,7 +29,7 @@ export const onBoardUser = async () => {
             ? `${firstName} ${lastName}`
             : firstName || lastName || null,
 
-        email: email?.[0]?.email || null,
+        email: emailAddresses?.[0]?.emailAddress || null,
         image: imageUrl || null,
       },
       create: {
@@ -38,8 +38,7 @@ export const onBoardUser = async () => {
           firstName && lastName
             ? `${firstName} ${lastName}`
             : firstName || lastName || null,
-
-        email: email?.[0]?.email || null,
+        email: emailAddresses?.[0]?.emailAddress || null,
         image: imageUrl || null,
       },
     });
