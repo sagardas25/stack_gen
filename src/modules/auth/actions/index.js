@@ -1,11 +1,13 @@
 import { currentUser } from "@clerk/nextjs/server";
 import db from "@/lib/db.js";
 
-
 // save the user data
 export const onBoardUser = async () => {
   try {
-    const user = currentUser();
+    const user = await currentUser();
+
+    //console.log("user : ", user);
+    
 
     if (!user) {
       return {
@@ -27,7 +29,7 @@ export const onBoardUser = async () => {
             ? `${firstName} ${lastName}`
             : firstName || lastName || null,
 
-        email: email[0]?.email || null,
+        email: email?.[0]?.email || null,
         image: imageUrl || null,
       },
       create: {
@@ -37,7 +39,7 @@ export const onBoardUser = async () => {
             ? `${firstName} ${lastName}`
             : firstName || lastName || null,
 
-        email: email[0]?.email || null,
+        email: email?.[0]?.email || null,
         image: imageUrl || null,
       },
     });
