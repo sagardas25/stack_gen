@@ -1,6 +1,6 @@
-import { currentUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import db from "@/lib/db.js";
-import { EmailAddress } from "@clerk/nextjs/dist/types/server";
+
 
 // save the user data
 export const onBoardUser = async () => {
