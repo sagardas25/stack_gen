@@ -12,6 +12,7 @@
     "@base-ui/react": "^1.2.0",
     "@clerk/nextjs": "^6.39.0",
     "@hookform/resolvers": "^5.2.2",
+    "@inngest/agent-kit": "^0.13.2",
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
     "class-variance-authority": "^0.7.1",
