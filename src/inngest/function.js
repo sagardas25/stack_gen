@@ -1,11 +1,18 @@
+import { Sandbox } from "e2b";
 import { inngest } from "./client.js";
 import { createAgent, gemini } from "@inngest/agent-kit";
 
-export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
+export const codeAgentFunction = inngest.createFunction(
+  { id: "prompt-base" },
+  { event: "code-agent/run" },
 
   async ({ event, step }) => {
+    // get sandbox id
+    const sandBoxId = await step.run("get-sandbox-id", async () => {
+      const result = await Sandbox.create("saz159vr1u81suyjruee");
+      return result.sandboxId;
+    });
+
     const helloAgent = createAgent({
       name: "hello agent",
       Description: "greets users",
@@ -15,15 +22,12 @@ export const helloWorld = inngest.createFunction(
       }),
     });
 
-    const response = await helloAgent.run(
-      `say hello to the user : ${event.data.email}`,
-    );
-
-    console.log("repose : ", response);
-
-    const output = response?.output?.[0]?.content;
-    console.log("output : ", output);
-
-    return output;
+    // get sandbox url
+    const sandboxUrl = await step.run("get-sandbox-url", async () => {
+      const sandbox = await Sandbox.connect(sandBoxId);
+      const host = sandbox.getHost(3000);
+      const url = `https://${host}`;
+      return url;
+    });
   },
 );
