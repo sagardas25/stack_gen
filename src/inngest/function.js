@@ -1,6 +1,6 @@
 import { Sandbox } from "e2b";
 import { inngest } from "./client.js";
-import { createAgent, gemini } from "@inngest/agent-kit";
+import { codeAgent } from "./agents/agents.js";
 
 export const codeAgentFunction = inngest.createFunction(
   { id: "prompt-base" },
@@ -13,14 +13,8 @@ export const codeAgentFunction = inngest.createFunction(
       return result.sandboxId;
     });
 
-    const helloAgent = createAgent({
-      name: "hello agent",
-      Description: "greets users",
-      system: "you are a helpfull Ai-agent.Aways greet user with politeness",
-      model: gemini({
-        model: "gemini-2.5-flash",
-      }),
-    });
+    // ai response
+    const aiResponse = codeAgent(sandBoxId, event);
 
     // get sandbox url
     const sandboxUrl = await step.run("get-sandbox-url", async () => {
@@ -29,5 +23,12 @@ export const codeAgentFunction = inngest.createFunction(
       const url = `https://${host}`;
       return url;
     });
+
+    return {
+      url: sandboxUrl,
+      title: "untitled",
+      files: aiResponse.state.data.files,
+      summary: aiResponse.state.data.summary,
+    };
   },
 );
