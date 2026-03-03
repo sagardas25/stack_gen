@@ -41,8 +41,10 @@ const Navbar = () => {
         </SignedOut>
 
         <SignedIn>
-          <ModeToggle></ModeToggle>
-          <UserButton />
+          <div className="flex gap-4 ">
+            <UserButton />
+            <ModeToggle />
+          </div>
         </SignedIn>
       </div>
     </nav>

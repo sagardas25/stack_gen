@@ -15,15 +15,17 @@ export const codeAgentFunction = inngest.createFunction(
   { id: "prompt-base" },
   { event: "code-agent/run" },
 
+  // step -- used for durable step execution
+  // event -- contains user input
   async ({ event, step }) => {
-
     // get sandbox id
     const sandBoxId = await step.run("get-sandbox-id", async () => {
+      //create a sandbox from template "test-base-v-1"
       const result = await Sandbox.create("test-base-v-1");
-
       return result.sandboxId;
     });
 
+    // ai agent Configuration
     const supportAgent = createAgent({
       name: "code-agent",
       description: "An expert coding agent",
@@ -33,21 +35,25 @@ export const codeAgentFunction = inngest.createFunction(
       }),
 
       tools: [
-        // 1. Terminals
+        // 1. Terminal tool
         createTool({
           name: "terminal_tool",
           description: "Use the terminals to run commands",
+          //input schema valiadation
           parameters: z.object({
             command: z.string(),
           }),
 
+          // controls how to execute the tool
+          // network --> Shared execution state across iterations
+          // step --> from inngest workflow
           handler: async ({ command }, { network, agent, step }) => {
-            await step?.run("terminal", async () => {
+            //Tool execution becomes a durable sub-step
+            return await step?.run("terminal", async () => {
               const buffers = { stdout: "", stderr: "" };
 
               try {
                 const sandbox = await Sandbox.connect(sandBoxId);
-
                 const result = await sandbox.commands.run(command, {
                   onStdout: (data) => {
                     buffers.stdout += data;
@@ -69,7 +75,7 @@ export const codeAgentFunction = inngest.createFunction(
         }),
         // 2. createOrUpdateFiles
         createTool({
-          name: "createOrUpdateFiles",
+          name: "create_or_update_files",
           description: "create or update files in the sandbox",
           parameters: z.object({
             files: z.array(
@@ -83,12 +89,15 @@ export const codeAgentFunction = inngest.createFunction(
           handler: async ({ files }, { step, network }) => {
             const newFile = await step?.run("createOrUpdateFile", async () => {
               try {
-                const updatedFiles = (await network?.state?.data.files) || {};
+                //Load previously written files from memory
+                const updatedFiles = network?.state?.data.files || {};
 
                 const sandbox = await Sandbox.connect(sandBoxId);
 
                 for (const file of files) {
+                  // Write to real sandbox filesystem
                   await sandbox.files.write(file.path, file.content);
+                  // Update in-memory updatedFiles
                   updatedFiles[file.path] = file.content;
                 }
 
@@ -100,22 +109,25 @@ export const codeAgentFunction = inngest.createFunction(
 
             if (typeof newFile === "object") {
               network.state.data.files = newFile;
+              // console.log("AFTER ASSIGNMENT NETWORK:", network);
             }
           },
         }),
         // 3. readFiles
+        // useful to know existing filesystem inside sandbox for furthur changes
         createTool({
-          name: "readFiles",
-          description: "",
+          name: "read_files",
+          description: "Read file contents from the sandbox",
           parameters: z.object({
             files: z.array(z.string()),
           }),
           handler: async ({ files }, { step }) => {
-            await step?.run("readFiles", async () => {
+            return await step?.run("readFiles", async () => {
               try {
                 const sandbox = await Sandbox.connect(sandBoxId);
                 const contents = [];
                 for (const file of files) {
+                  //Remote filesystem read happens
                   const content = await sandbox.files.read(file);
                   contents.push({ path: file, content });
                 }
@@ -129,6 +141,10 @@ export const codeAgentFunction = inngest.createFunction(
         }),
       ],
 
+      // controls when to stop
+      // Runs after every assistant response
+      // detects <task_summary> </task_summary> and stores it
+      // it works like a control signal generator of stopping condition
       lifecycle: {
         onResponse: async ({ result, network }) => {
           const lastAssistantMessage = lastAssistantTextMessageContent(result);
@@ -142,19 +158,22 @@ export const codeAgentFunction = inngest.createFunction(
       },
     });
 
+    // Controls which agent runs, how many times it runs, and when execution stops
     const network = createNetwork({
       name: "coding-agent-network",
       agents: [supportAgent],
       maxIter: 10,
       router: async ({ network }) => {
+        // if summary is there then stop
         const summary = network.state.data.summary;
         if (summary) return;
 
+        // else run agent again
         return supportAgent;
       },
     });
 
-    const result = await network.run(event.data.value);
+    const finalOutput = await network.run(event.data.value);
 
     // get sandbox url
     const sandboxUrl = await step.run("get-sandbox-url", async () => {
@@ -167,8 +186,8 @@ export const codeAgentFunction = inngest.createFunction(
     return {
       url: sandboxUrl,
       title: "untitled",
-      files: result.state.data.files,
-      summary: result.state.data.summary,
+      files: finalOutput.state.data.files,
+      summary: finalOutput.state.data.summary,
     };
   },
 );
