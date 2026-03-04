@@ -14,13 +14,16 @@ export const createProject = async (value) => {
 
   // create a project and store in db
   const newProject = await db.project.create({
-    
-    name: generateSlug(2, { format: "title" }),
-    userId: user.id,
-    messages: {
-      content: value,
-      role: MessageRole.USER, // messageRole == User --> human prompt
-      type: MessageType.RESULT,
+    data: {
+      name: generateSlug(2, { format: "title" }),
+      userId: user.id,
+      messages: {
+        create: {
+          content: value,
+          role: MessageRole.USER, // messageRole == User --> human prompt
+          type: MessageType.RESULT,
+        },
+      },
     },
   });
 
