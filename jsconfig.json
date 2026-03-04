@@ -4,7 +4,7 @@
 
     "paths": {
       "@/*": ["./src/*"],
-      "@/db/*": ["prisma/generated/prisma/*"]
+      "@/prisma-db/*": ["prisma/generated/prisma/*"]
     }
   }
 }

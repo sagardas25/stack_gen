@@ -2,14 +2,15 @@
 
 import db from "@/lib/db.js";
 import { inngest } from "@/inngest/client";
-import { MessageRole, MessageType } from "@/db/client";
+import { MessageRole, MessageType } from "@/prisma-db/client";
 import { generateSlug } from "random-word-slugs";
 import { getCurrentUser } from "@/modules/auth/actions";
 
 // user create a project by giving prompt
 // eg : create a todo app
 export const createProject = async (value) => {
-  const user = getCurrentUser();
+  console.log("db : ", Object.keys(db));
+  const user = await getCurrentUser();
   if (!user) throw new Error("unauthrized");
 
   // create a project and store in db
@@ -42,7 +43,7 @@ export const createProject = async (value) => {
 
 // get the projects created by the user
 export const getProjects = async () => {
-  const user = getCurrentUser();
+  const user = await getCurrentUser();
   if (!user) throw new Error("unauthrized");
 
   const projects = await db.findMany({
@@ -60,7 +61,7 @@ export const getProjects = async () => {
 
 // get the project by id
 export const getProjectById = async (projectId) => {
-  const user = getCurrentUser();
+  const user = await getCurrentUser();
   if (!user) throw new Error("unauthrized");
 
   const project = await db.findUnique({

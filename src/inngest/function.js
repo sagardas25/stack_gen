@@ -10,8 +10,8 @@ import {
 import { lastAssistantTextMessageContent } from "./utils/util.js";
 import { PROMPT } from "./constants/prompt.js";
 import z from "zod";
-import { MessageRole, MessageType } from "@/db/client";
-import { Fragment } from "react";
+import { MessageRole, MessageType } from "@/prisma-db/client";
+import db from "@/lib/db.js";
 
 export const codeAgentFunction = inngest.createFunction(
   { id: "prompt-base" },
@@ -20,7 +20,7 @@ export const codeAgentFunction = inngest.createFunction(
   // step -- used for durable step execution
   // event -- contains user input
   async ({ event, step }) => {
-    console.log("messagerole : ", MessageRole);
+    // console.log("messagerole : ", MessageRole);
     // get sandbox id
     const sandBoxId = await step.run("get-sandbox-id", async () => {
       //create a sandbox from template "test-base-v-1"
