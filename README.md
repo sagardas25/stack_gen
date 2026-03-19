@@ -112,8 +112,8 @@ flowchart TB
 
     UI --> PREVIEW
     UI --> CODE
-    
-   ```
+
+```
 
 ---
 
@@ -150,6 +150,36 @@ flowchart TB
    User sees preview and source code instantly.
 
 ---
+
+## 🔁 AI Execution Loop (Core Engine)
+
+This is the heart of StackGen — where the AI continuously improves the generated application until it works.
+
+```mermaid
+flowchart TB
+
+    A[Event Trigger] --> B[Inngest Function Starts]
+    B --> C[Sandbox Created (E2B)]
+    C --> D[Agent + Network Initialized]
+
+    D --> E[network.run(input)]
+
+    subgraph AI Loop
+        E --> F[Model Thinks]
+        F --> G[Tools Execute]
+        G --> H[Lifecycle Runs]
+        H --> I[Router Decides]
+        I --> F
+    end
+
+    I --> J[Loop Stops]
+    J --> K[Result Resolved]
+    K --> L[Sandbox URL Fetched]
+    L --> M[Final Response Returned]
+
+```
+
+    ---
 
 ## 🛠️ Tech Stack
 
@@ -268,9 +298,8 @@ npm run inngest-dev
 
 ### 🌐 Open in Browser
 
-- 🚀 **App:**  http://localhost:3000  
-- ⚙️ **Inngest Dev UI:** http://localhost:8288  
-
+- 🚀 **App:** http://localhost:3000
+- ⚙️ **Inngest Dev UI:** http://localhost:8288
 
 ---
 
