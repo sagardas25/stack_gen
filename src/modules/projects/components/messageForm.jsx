@@ -102,13 +102,34 @@ const MessageForm = ({ projectId }) => {
             type="submit"
             disabled={!isActive || isPending}
             className={cn(
-              "size-8 rounded-full transition-colors",
-              isPending && "bg-muted-foreground border",
-              !isPending && isActive && "bg-primary text-primary-foreground",
-              !isActive && "bg-muted text-muted-foreground",
+              "relative size-10 rounded-full flex items-center justify-center",
+              "transition-all duration-200 ease-out",
+
+              //  ACTIVE (green)
+              isActive &&
+                !isPending &&
+                "bg-emerald-500 text-white hover:bg-emerald-600 hover:scale-105 active:scale-95 shadow-sm",
+
+              // DISABLED
+              (!isActive || isPending) &&
+                "bg-muted text-muted-foreground cursor-not-allowed",
+
+              // LOADING
+              isPending && "animate-pulse",
             )}
           >
-            {isPending ? <Spinner /> : <ArrowUpIcon className="size-4" />}
+            <div className="relative flex items-center justify-center">
+              {isPending ? (
+                <Spinner className="size-4 animate-spin" />
+              ) : (
+                <ArrowUpIcon
+                  className={cn(
+                    "size-4 transition-transform duration-200",
+                    isActive && "-translate-y-1px",
+                  )}
+                />
+              )}
+            </div>
           </Button>
         </div>
       </form>

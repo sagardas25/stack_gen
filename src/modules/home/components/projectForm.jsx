@@ -180,9 +180,9 @@ const ProjectsForm = () => {
             </div>
             <Button
               className={cn(
-                "size-8 rounded-full bg-green-500 hover:bg-green-600 text-white transition",
+                "size-8 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white transition",
                 isButtonDisabled &&
-                  "opacity-40 hover:bg-green-500 cursor-not-allowed",
+                  "opacity-40 hover:bg-emerald-500 cursor-not-allowed",
               )}
               disabled={isButtonDisabled}
             >
