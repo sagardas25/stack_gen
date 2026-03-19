@@ -268,9 +268,9 @@ npm run inngest-dev
 
 ### 🌐 Open in Browser
 
-```
-http://localhost:3000
-```
+- 🚀 **App:**  http://localhost:3000  
+- ⚙️ **Inngest Dev UI:** http://localhost:8288  
+
 
 ---
 
@@ -278,7 +278,6 @@ http://localhost:3000
 
 - 🚀 Build MVPs instantly
 - 🧪 Rapid prototyping
-- 📚 Learn full-stack development
 - 🏗️ Generate internal tools
 - 🤖 AI-assisted coding workflows
 
@@ -302,16 +301,6 @@ http://localhost:3000
 - Safe execution
 - No system risk
 - Reproducible environments
-
----
-
-## 🗺️ Roadmap
-
-- [ ] Multi-language support (Python, Go)
-- [ ] GitHub export & deployment
-- [ ] Team collaboration
-- [ ] Plugin ecosystem
-- [ ] Fine-tuned AI agents
 
 ---
 
