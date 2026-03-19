@@ -182,82 +182,82 @@ export const codeAgentFunction = inngest.createFunction(
 
     const finalOutput = await network.run(event.data.value);
 
-    const fragmentTitleGeneratorAgent = createAgent({
-      name: "fragment-title-generator",
-      description: "Generate a title for the fragment",
-      system: FRAGMENT_TITLE_PROMPT,
-      model: gemini({ model: "gemini-2.5-flash" }),
-    });
+    // const fragmentTitleGeneratorAgent = createAgent({
+    //   name: "fragment-title-generator",
+    //   description: "Generate a title for the fragment",
+    //   system: FRAGMENT_TITLE_PROMPT,
+    //   model: gemini({ model: "gemini-2.5-flash" }),
+    // });
 
     console.log("SUMMARY:", finalOutput?.state?.data?.summary);
     const summ = finalOutput?.state?.data?.summary;
 
-    const fragmentTitle = await step.run("fragment-title-run", async () => {
-      if (summ) {
-        const { fragmentTitle } = await fragmentTitleGeneratorAgent.run(summ);
-        return fragmentTitle;
-      }
-      return "Untitled";
-    });
+    // const fragmentTitle = await step.run("fragment-title-run", async () => {
+    //   if (summ) {
+    //     const { fragmentTitle } = await fragmentTitleGeneratorAgent.run(summ);
+    //     return fragmentTitle;
+    //   }
+    //   return "Untitled";
+    // });
 
-    const generateFragmentTitle = () => {
-      if (!fragmentTitle) {
-        return "Untitled";
-      }
+    // const generateFragmentTitle = () => {
+    //   if (!fragmentTitle) {
+    //     return "Untitled";
+    //   }
 
-      if (!Array.isArray(fragmentTitle)) {
-        return "Untitled";
-      }
+    //   if (!Array.isArray(fragmentTitle)) {
+    //     return "Untitled";
+    //   }
 
-      if (!fragmentTitle[0] || fragmentTitle[0].type != "text") {
-        return "Untitled";
-      }
+    //   if (!fragmentTitle[0] || fragmentTitle[0].type != "text") {
+    //     return "Untitled";
+    //   }
 
-      const content = fragmentTitle[0].content;
+    //   const content = fragmentTitle[0].content;
 
-      if (Array.isArray(content)) {
-        return content.join("");
-      }
+    //   if (Array.isArray(content)) {
+    //     return content.join("");
+    //   }
 
-      return content || "Untitled";
-    };
+    //   return content || "Untitled";
+    // };
 
-    const responseGeneratorAgent = createAgent({
-      name: "response-generator",
-      description: "Generate a response for the fragment",
-      system: RESPONSE_PROMPT,
-      model: gemini({ model: "gemini-2.5-flash" }),
-    });
+    // const responseGeneratorAgent = createAgent({
+    //   name: "response-generator",
+    //   description: "Generate a response for the fragment",
+    //   system: RESPONSE_PROMPT,
+    //   model: gemini({ model: "gemini-2.5-flash" }),
+    // });
 
-    const responsePart = await step.run("response-generate-run", async () => {
-      if (summ) {
-        const { response } = await responseGeneratorAgent.run(summ);
-        return response;
-      }
-      return "Here you go '";
-    });
+    // const responsePart = await step.run("response-generate-run", async () => {
+    //   if (summ) {
+    //     const { response } = await responseGeneratorAgent.run(summ);
+    //     return response;
+    //   }
+    //   return "Here you go '";
+    // });
 
-    const generateResponse = () => {
-      if (!responsePart) {
-        return "Here you go";
-      }
+    // const generateResponse = () => {
+    //   if (!responsePart) {
+    //     return "Here you go";
+    //   }
 
-      if (!Array.isArray(responsePart)) {
-        return "Here you go";
-      }
+    //   if (!Array.isArray(responsePart)) {
+    //     return "Here you go";
+    //   }
 
-      if (!responsePart[0] || responsePart[0].type != "text") {
-        return "Here you go";
-      }
+    //   if (!responsePart[0] || responsePart[0].type != "text") {
+    //     return "Here you go";
+    //   }
 
-      const content = responsePart[0].content;
+    //   const content = responsePart[0].content;
 
-      if (Array.isArray(content)) {
-        return content.join("");
-      }
+    //   if (Array.isArray(content)) {
+    //     return content.join("");
+    //   }
 
-      return content || "Here you go";
-    };
+    //   return content || "Here you go";
+    // };
 
     const isError =
       !finalOutput.state.data.summary ||
@@ -290,13 +290,13 @@ export const codeAgentFunction = inngest.createFunction(
       return await db.message.create({
         data: {
           projectId: event.data.projectId,
-          content: generateResponse(),
+          content: summ,
           role: MessageRole.ASSISTANT,
           type: MessageType.RESULT,
           fragments: {
             create: {
               sandboxUrl: sandboxUrl,
-              title: generateFragmentTitle(),
+              title: "untitled",
               files: finalOutput.state.data,
             },
           },
@@ -306,9 +306,9 @@ export const codeAgentFunction = inngest.createFunction(
 
     return {
       url: sandboxUrl,
-      title: generateFragmentTitle(),
+      title: "untitled",
       files: finalOutput.state.data.files,
-      summary: generateResponse(),
+      summary: summ,
     };
   },
 );
