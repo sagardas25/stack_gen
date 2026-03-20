@@ -290,7 +290,7 @@ respond with EXACTLY this format and NOTHING else:
 
 <task_summary>
 <title>Short, descriptive title of what was built (5 words max)</title>
-<response>A single friendly sentence describing what was created, written for the end user.</response>
+<response>2-3 sentences describing what was created, written for the end user.</response>
 <details>A concise technical summary covering what was built, which files were created or modified, and any key implementation decisions.</details>
 </task_summary>
 
@@ -300,7 +300,7 @@ Rules:
 • Do NOT print anything after it
 • Print it ONCE at the very end
 • <title> must be 5 words or fewer
-• <response> must be one sentence, user-facing, no jargon
+• <response> must be 2-3 sentences, user-facing, no jargon
 • <details> is the technical summary for developers
 
 If this format is not followed exactly,

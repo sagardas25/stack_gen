@@ -22,13 +22,13 @@ const FragmentWeb = ({ data }) => {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="p-2 border-b bg-sidebar flex items-center gap-x-2">
-        <Hint text={"Refresh"} side={"bottom"} align={"start"}>
+        <Hint label={"Refresh"} side={"bottom"} align={"start"}>
           <Button size={"sm"} variant={"outline"} onClick={onRefresh}>
             <RefreshCcw />
           </Button>
         </Hint>
         <Hint
-          text={copied ? "Copied" : "Click to Copy"}
+          label={copied ? "Copied" : "Click to Copy"}
           side="bottom"
           align="start"
         >
@@ -43,7 +43,7 @@ const FragmentWeb = ({ data }) => {
           </Button>
         </Hint>
 
-        <Hint text={"Open in New Tab"} side="bottom" align="start">
+        <Hint label={"Open in New Tab"} side="bottom" align="start">
           <Button
             size={"sm"}
             variant={"outline"}

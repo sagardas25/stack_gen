@@ -242,7 +242,7 @@ export const codeAgentFunction = inngest.createFunction(
       return await db.message.create({
         data: {
           projectId: event.data.projectId,
-          content: finalOutput?.state?.data?.details,
+          content: finalOutput?.state?.data?.response,
           role: MessageRole.ASSISTANT,
           type: MessageType.RESULT,
           fragments: {

@@ -6,10 +6,12 @@ import { ChevronRightIcon, Code2Icon } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 /* Fragment Card */
 const FragmentCard = ({ fragment, isActiveFragment, onFragmentClick }) => {
   // console.log("isActiveFragment:", isActiveFragment);
+
   return (
     <button
       onClick={() => onFragmentClick(fragment)}
@@ -53,6 +55,7 @@ const AssistantMessage = ({
   onFragmentClick,
   type,
 }) => {
+  console.log("content : ", content);
   return (
     <div
       className={cn(
@@ -78,8 +81,9 @@ const AssistantMessage = ({
       {/* Content */}
       <div className="pl-8 flex flex-col gap-y-4">
         {content && (
-          <div className="prose prose-neutral dark:prose-invert max-w-none">
-            <ReactMarkdown>{content}</ReactMarkdown>
+          <div
+            className="prose prose-invert prose-sm max-w-none border-t border-zinc-800 pt-3">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
           </div>
         )}
 
