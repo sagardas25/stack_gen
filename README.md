@@ -157,41 +157,28 @@ This is the heart of StackGen — where the AI continuously improves the generat
 
 ```mermaid
 flowchart TD
-
     A[Event Trigger: code-agent/run] --> B[Inngest Function Starts]
-
-    B --> C[Create Sandbox<br/>Sandbox.create()]
+    B --> C["Create Sandbox: Sandbox.create()"]
     C --> D[Get sandboxId]
-
-    D --> E[Initialize AI Agent<br/>createAgent()]
-
+    D --> E["Initialize AI Agent: createAgent()"]
     E --> F[Attach Tools]
-
-    F --> F1[Terminal Tool<br/>Run Commands]
-    F --> F2[Create/Update Files Tool<br/>Write Files]
-    F --> F3[Read Files Tool<br/>Read Files]
-
-    E --> G[Lifecycle Hook<br/>onResponse()]
+    F --> F1[Terminal Tool: Run Commands]
+    F --> F2[Create or Update Files Tool]
+    F --> F3[Read Files Tool]
+    E --> G["Lifecycle Hook: onResponse()"]
     G --> G1[Extract task_summary]
     G1 --> G2[Parse title, response, details]
     G2 --> G3[Store in network.state]
-
-    E --> H[Create Network<br/>createNetwork()]
-
+    E --> H["Create Network: createNetwork()"]
     H --> H1[Router Logic]
     H1 -->|No summary| E
     H1 -->|Summary exists| I[Stop Execution]
-
-    I --> J[Run Network<br/>network.run()]
-
+    I --> J["Run Network: network.run()"]
     J --> K[Check Output]
     K -->|Error| L[Save Error Message to DB]
-    K -->|Success| M[Update Project Name]
-
-    M --> N[Generate Sandbox URL]
-    N --> O[Save Result to DB<br/>Message + Fragments]
-
-    O --> P[Return Response<br/>URL + Title + Files + Summary]
+    K -->|Success| M[Get Sandbox URL]
+    M --> N[Save Result to DB]
+    N --> O[Return Response]
 
 ```
 
