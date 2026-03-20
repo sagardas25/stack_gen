@@ -151,31 +151,47 @@ flowchart TB
 
 ---
 
-## 🔁 AI Execution Loop (Core Engine)
+## 🔁 AI Agent Workflow Diagram
 
 This is the heart of StackGen — where the AI continuously improves the generated application until it works.
 
 ```mermaid
-flowchart TB
+flowchart TD
 
-    A[Event Trigger] --> B[Inngest Function Starts]
-    B --> C[Sandbox Created - E2B]
-    C --> D[Agent and Network Initialized]
+    A[Event Trigger: code-agent/run] --> B[Inngest Function Starts]
 
-    D --> E[network.run input]
+    B --> C[Create Sandbox<br/>Sandbox.create()]
+    C --> D[Get sandboxId]
 
-    subgraph AI_Loop
-        E --> F[Model Thinks]
-        F --> G[Tools Execute]
-        G --> H[Lifecycle Runs]
-        H --> I[Router Decides]
-        I --> F
-    end
+    D --> E[Initialize AI Agent<br/>createAgent()]
 
-    I --> J[Loop Stops]
-    J --> K[Result Resolved]
-    K --> L[Sandbox URL Fetched]
-    L --> M[Final Response Returned]
+    E --> F[Attach Tools]
+
+    F --> F1[Terminal Tool<br/>Run Commands]
+    F --> F2[Create/Update Files Tool<br/>Write Files]
+    F --> F3[Read Files Tool<br/>Read Files]
+
+    E --> G[Lifecycle Hook<br/>onResponse()]
+    G --> G1[Extract task_summary]
+    G1 --> G2[Parse title, response, details]
+    G2 --> G3[Store in network.state]
+
+    E --> H[Create Network<br/>createNetwork()]
+
+    H --> H1[Router Logic]
+    H1 -->|No summary| E
+    H1 -->|Summary exists| I[Stop Execution]
+
+    I --> J[Run Network<br/>network.run()]
+
+    J --> K[Check Output]
+    K -->|Error| L[Save Error Message to DB]
+    K -->|Success| M[Update Project Name]
+
+    M --> N[Generate Sandbox URL]
+    N --> O[Save Result to DB<br/>Message + Fragments]
+
+    O --> P[Return Response<br/>URL + Title + Files + Summary]
 
 ```
 
