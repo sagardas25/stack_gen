@@ -17,6 +17,18 @@
 ![Sandbox](https://img.shields.io/badge/E2B-Sandbox-green?style=for-the-badge)
 ![Auth](https://img.shields.io/badge/Clerk-Auth-red?style=for-the-badge)
 
+---
+
+## 🌐 Live Demo
+
+🚀 **Try it now:** https://stackgen.live
+
+- 🧠 Generate full-stack apps from prompts
+- ⚡ Watch AI write, run, and debug code
+- 👀 Explore live previews and generated source code
+
+---
+
 ## 🌟 Overview
 
 StackGen is an **AI-powered full-stack application generator** that goes beyond traditional code generation.
